@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 與經濟研究報告專題平台 | 淡江大學經濟學系 TKU AI & Economics Lab</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- Google Fonts: Inter & Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+            mono: ['Fira Code', 'monospace']
+          },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              800: '#0c4a6e',
+              900: '#082f49',
+              950: '#031726'
+            },
+            accent: {
+              red: '#f43f5e',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              violet: '#8b5cf6'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* Card Glow and Hover Effects */
+    .hero-glow {
+      background: radial-gradient(circle at 50% 20%, rgba(2, 132, 199, 0.15) 0%, rgba(3, 23, 38, 0) 70%);
+    }
+    .featured-card-border {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.5), rgba(2, 132, 199, 0.1), rgba(16, 185, 129, 0.3));
+    }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- Top Announcement Bar -->
+  <aside class="bg-gradient-to-r from-brand-950 via-slate-900 to-brand-950 border-b border-slate-800 text-xs py-2 px-4 text-center text-slate-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
+      <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold text-[11px] border border-emerald-500/30">
+        <i class="fa-solid fa-circle text-[6px] mr-1.5 animate-pulse text-emerald-400"></i> 最新專案上線
+      </span>
+      <span>核心研究主題一「通膨與薪資非對稱性檢定」已完成實證計量建模！</span>
+      <a href="通膨與薪資.html" class="text-sky-400 hover:text-sky-300 font-medium underline underline-offset-2 ml-1 inline-flex items-center gap-1">
+        立即瀏覽報告 <i class="fa-solid fa-arrow-right text-[10px]"></i>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Sticky Navigation Header -->
+  <header class="sticky top-0 z-50 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand & TKU Affiliation -->
+      <a href="home.html" class="flex items-center space-x-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-800 via-brand-600 to-sky-400 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-sky-500/10 group-hover:scale-105 transition-transform">
+          TKU
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-bold tracking-wider text-sky-400 uppercase">淡江大學 經濟學系</span>
+            <span class="px-1.5 py-0.2 rounded text-[9px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">Lab Hub</span>
+          </div>
+          <h1 class="text-sm sm:text-base font-bold text-white tracking-tight leading-tight group-hover:text-sky-300 transition-colors">
+            AI 與經濟研究專題平台
+          </h1>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Menu -->
+      <nav class="hidden md:flex items-center space-x-7 text-sm font-medium text-slate-300">
+        <a href="#featured" class="hover:text-sky-400 transition-colors flex items-center gap-1.5">
+          <i class="fa-solid fa-fire text-rose-400 text-xs"></i> 焦點主題
+        </a>
+        <a href="#topics" class="hover:text-sky-400 transition-colors">專題矩陣</a>
+        <a href="#indicators" class="hover:text-sky-400 transition-colors">總經指標板</a>
+        <a href="#tech-stack" class="hover:text-sky-400 transition-colors">研究工具棧</a>
+        <a href="#aremos-guide" class="hover:text-sky-400 transition-colors">AREMOS 資源</a>
+      </nav>
+
+      <!-- Action Button to Key Research Document -->
+      <div class="flex items-center gap-3">
+        <a href="通膨與薪資.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-brand-600 hover:from-sky-400 hover:to-brand-500 text-white text-xs sm:text-sm font-semibold shadow-md shadow-sky-500/20 hover:shadow-sky-500/30 transition-all transform hover:-translate-y-0.5">
+          <span>通膨與薪資報告</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    <!-- Hero Section -->
+    <section class="relative pt-16 pb-20 sm:pt-20 sm:pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden hero-glow border-b border-slate-800/80">
+      <!-- Background Matrix Grid Texture -->
+      <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:28px_28px] pointer-events-none"></div>
+
+      <div class="max-w-5xl mx-auto text-center relative z-10">
+        <!-- Academic Pill Tag -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-700/80 text-sky-400 text-xs font-semibold mb-6 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>淡江大學 總體經濟與人工智慧計量實證實驗室</span>
+          <span class="text-slate-600">•</span>
+          <span class="text-slate-300">AREMOS 數據庫驅動</span>
+        </div>
+
+        <h2 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6">
+          實證經濟學 × 人工智慧
+          <span class="block text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-300 to-indigo-400 mt-2">
+            探索台灣總體經濟動態傳導機制
+          </span>
+        </h2>
+
+        <p class="max-w-3xl mx-auto text-sm sm:text-base md:text-lg text-slate-300 leading-relaxed font-normal mb-10">
+          整合台灣 AREMOS 總體經濟資料庫、現代時間序列計量方法（SVAR、HAC 穩健標準誤、非對稱非線性模型）與機器學習預測架構，提供具備實證基礎與政策前瞻洞見的高品質學術專題研究。
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-wrap justify-center items-center gap-4 text-sm font-semibold">
+          <a href="通膨與薪資.html" class="px-6 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold flex items-center gap-2.5 shadow-lg shadow-sky-500/25 transition-all transform hover:-translate-y-0.5">
+            <i class="fa-solid fa-book-open"></i>
+            <span>進入主題一：通膨與薪資專題報告</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </a>
+          <a href="#topics" class="px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700/80 flex items-center gap-2 transition-all">
+            <i class="fa-solid fa-list-check text-sky-400"></i>
+            <span>檢視研究專題矩陣</span>
+          </a>
+        </div>
+
+        <!-- Academic Trust Metrics -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-14 max-w-4xl mx-auto text-left">
+          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
+            <div class="text-2xl font-black text-white font-mono">1981-2024</div>
+            <div class="text-xs text-slate-400 mt-1">AREMOS 縱橫期跨度</div>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
+            <div class="text-2xl font-black text-sky-400 font-mono">SVAR / HAC</div>
+            <div class="text-xs text-slate-400 mt-1">計量結構模型規格</div>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
+            <div class="text-2xl font-black text-teal-400 font-mono">100% Python</div>
+            <div class="text-xs text-slate-400 mt-1">全自動清洗與建模管線</div>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
+            <div class="text-2xl font-black text-rose-400 font-mono">Asymmetric</div>
+            <div class="text-xs text-slate-400 mt-1">薪資黏性與螺旋檢定</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Macro Indicators Ticker / Mini Dashboard -->
+    <section id="indicators" class="py-10 bg-slate-900/70 border-b border-slate-800/80 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+          <div>
+            <span class="text-xs font-bold text-sky-400 uppercase tracking-wider">Macro Indicator Pulse</span>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-chart-line text-emerald-400"></i> 台灣總體經濟關鍵觀測指標
+            </h3>
+          </div>
+          <span class="text-xs text-slate-400">基準期：主計總處 / AREMOS 月度最新統計</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Metric 1: CPI -->
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition">
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+              <span>消費者物價指數年增率 (CPI YoY)</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">主題一核心</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-black text-rose-400 font-mono">+2.18%</span>
+              <span class="text-xs text-slate-400 font-mono">通膨警戒線 2.0%</span>
+            </div>
+            <!-- Mini SVG Sparkline -->
+            <div class="mt-3 flex items-center justify-between text-xs">
+              <svg class="w-24 h-6 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 100 25">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M0 20 L20 18 L40 8 L60 14 L80 5 L100 11"/>
+              </svg>
+              <span class="text-[11px] text-slate-400">傳導遞延期 2~4 季</span>
+            </div>
+          </div>
+
+          <!-- Metric 2: Regular Wage -->
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition">
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+              <span>經常性名目薪資年增率</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">W_REG_M</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-black text-sky-400 font-mono">+2.45%</span>
+              <span class="text-xs text-emerald-400 font-mono"><i class="fa-solid fa-arrow-trend-up"></i> 溫和補償</span>
+            </div>
+            <div class="mt-3 flex items-center justify-between text-xs">
+              <svg class="w-24 h-6 text-sky-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 100 25">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M0 22 L25 19 L50 15 L75 12 L100 9"/>
+              </svg>
+              <span class="text-[11px] text-slate-400">向下僵固性顯著</span>
+            </div>
+          </div>
+
+          <!-- Metric 3: Real Wage Gap -->
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition">
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+              <span>實質經常性薪資增率 (淨額)</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">購買力平減</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-black text-amber-400 font-mono">+0.27%</span>
+              <span class="text-xs text-slate-400 font-mono">微幅轉正</span>
+            </div>
+            <div class="mt-3 flex items-center justify-between text-xs">
+              <svg class="w-24 h-6 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 100 25">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M0 24 L25 22 L50 25 L75 18 L100 12"/>
+              </svg>
+              <span class="text-[11px] text-slate-400">面臨高通膨侵蝕</span>
+            </div>
+          </div>
+
+          <!-- Metric 4: Unemployment Rate -->
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition">
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+              <span>失業率 (季調後)</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">自然率水準</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-black text-emerald-400 font-mono">3.38%</span>
+              <span class="text-xs text-slate-400 font-mono">歷史低檔徘徊</span>
+            </div>
+            <div class="mt-3 flex items-center justify-between text-xs">
+              <svg class="w-24 h-6 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 100 25">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M0 8 L25 11 L50 14 L75 17 L100 20"/>
+              </svg>
+              <span class="text-[11px] text-slate-400">勞動市場供給緊俏</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Project Highlight Banner (通膨與薪資) -->
+    <section id="featured" class="py-14 px-4 sm:px-6 lg:px-8 scroll-mt-20">
+      <div class="max-w-7xl mx-auto">
+        <div class="border-b border-slate-800 pb-4 mb-8 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-400">Featured Milestone</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white">核心重點專題成果展示</h2>
+          </div>
+          <span class="text-xs text-slate-400 hidden sm:inline-block">嚴謹計量規格 • 完整原始碼釋出</span>
+        </div>
+
+        <!-- Featured Big Card Container -->
+        <div class="relative p-[1.5px] rounded-3xl featured-card-border shadow-2xl shadow-sky-950/50 group overflow-hidden">
+          <div class="relative rounded-[23px] bg-gradient-to-br from-slate-900 via-slate-950 to-brand-950 p-6 sm:p-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+            
+            <!-- Left Info Block -->
+            <div class="lg:w-7/12 space-y-5">
+              <div class="flex flex-wrap items-center gap-2.5">
+                <span class="px-3 py-1 rounded-md bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold tracking-wide flex items-center gap-1.5">
+                  <i class="fa-solid fa-star text-[10px]"></i> 專案主題一
+                </span>
+                <span class="px-2.5 py-1 rounded-md bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-mono">
+                  net.aremos.org.tw
+                </span>
+                <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+                  SVAR / HAC 穩健回歸
+                </span>
+              </div>
+
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-snug tracking-tight">
+                台灣薪資—物價螺旋機制之非對稱性檢定：
+                <span class="text-sky-400 font-bold block mt-1">停滯性通膨預期下的動態傳導實證</span>
+              </h3>
+
+              <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                實證檢驗台灣勞動市場在面對輸入型物價衝擊與通膨降溫時的非對稱反應。研究發現，在通膨飆漲期經常性薪資上調呈現顯著僵固，資方傾向以非經常性獎金替代底薪調整；而在物價回落時亦無追補，導致實質購買力呈現棘輪狀系統性受損。
+              </p>
+
+              <!-- Highlights list -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-300 pt-2">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-check text-emerald-400"></i>
+                  <span>新凱因斯工資僵固性與黏性資訊檢定</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-check text-emerald-400"></i>
+                  <span>雙 Y 軸互動走勢圖 (2008–2024 歷史衝擊)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-check text-emerald-400"></i>
+                  <span>12 季 SVAR 脈衝衝擊反應函數 (IRF)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-check text-emerald-400"></i>
+                  <span>提供 AREMOS 專用 Python 清洗與分析腳本</span>
+                </div>
+              </div>
+
+              <!-- Action Link -->
+              <div class="pt-3 flex flex-wrap items-center gap-4">
+                <a href="通膨與薪資.html" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-brand-600 hover:from-sky-400 hover:to-brand-500 text-white font-bold text-sm shadow-xl shadow-sky-500/25 transition-all transform hover:-translate-y-0.5">
+                  <span>進入「通膨與薪資」完整專題報告</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <span class="text-xs text-slate-400 flex items-center gap-1.5">
+                  <i class="fa-solid fa-file-lines text-sky-400"></i> 內含互動沙盒試算器
+                </span>
+              </div>
+            </div>
+
+            <!-- Right Visual Interactive Mockup -->
+            <div class="lg:w-5/12 w-full">
+              <a href="通膨與薪資.html" class="block relative rounded-2xl bg-slate-900 border border-slate-700/80 p-5 shadow-2xl hover:border-sky-500/60 transition group/mockup">
+                <!-- Mini Terminal Header -->
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-xs text-slate-400">
+                  <span class="flex items-center gap-1.5 font-mono text-slate-300">
+                    <i class="fa-solid fa-terminal text-sky-400"></i> wage_price_spiral_irf.py
+                  </span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-emerald-400 font-mono">OLS-HAC p &lt; 0.01</span>
+                </div>
+
+                <!-- Graphic Preview -->
+                <div class="mt-4 space-y-3">
+                  <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs font-mono text-sky-300">
+                    <div>$ \Delta W_t = \alpha + \sum \beta^+ \Delta \text{CPI}^+ + \sum \beta^- \Delta \text{CPI}^- + \varepsilon_t $</div>
+                  </div>
+
+                  <!-- Mock Graph Preview -->
+                  <div class="h-32 bg-slate-950 rounded-lg p-3 border border-slate-800/80 flex flex-col justify-end relative overflow-hidden">
+                    <div class="absolute top-2 left-3 text-[10px] text-slate-400 font-sans flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-rose-500"></span> CPI 衝擊
+                      <span class="w-2 h-2 rounded-full bg-sky-400"></span> 名目薪資反應
+                    </div>
+                    <!-- Mock chart line graphic with SVG -->
+                    <svg class="w-full h-20 text-sky-400" viewBox="0 0 200 60" fill="none">
+                      <path d="M0 45 Q 30 10, 60 25 T 120 40 T 200 48" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
+                      <path d="M0 50 Q 20 45, 50 15 T 100 20 T 200 35" stroke="#f43f5e" stroke-width="1.8" stroke-dasharray="3,3" fill="none"/>
+                    </svg>
+                  </div>
+
+                  <div class="flex items-center justify-between text-xs text-slate-300 pt-1">
+                    <span>非對稱檢驗結果：<strong class="text-rose-400 font-bold">拒絕對稱性 (p = 0.003)</strong></span>
+                    <span class="text-sky-400 font-medium group-hover/mockup:translate-x-1 transition-transform inline-flex items-center gap-1">
+                      查閱完整圖表 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Research Topics Matrix Grid -->
+    <section id="topics" class="py-14 px-4 sm:px-6 lg:px-8 bg-slate-900/40 border-y border-slate-800/80 scroll-mt-20">
+      <div class="max-w-7xl mx-auto">
+        <div class="border-b border-slate-800 pb-4 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Curriculum & Topics</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white">專題研究架構矩陣 (Research Portfolio)</h2>
+          </div>
+          <p class="text-xs text-slate-400">淡江大學 AI 與經濟研究專案完整子題規劃</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          <!-- Card 1: Core Topic 1 (Active Link) -->
+          <div class="rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-sky-500/50 hover:border-sky-400 p-6 flex flex-col justify-between shadow-lg shadow-sky-950/40 transition group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="w-9 h-9 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-sm border border-sky-500/30">
+                  01
+                </span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  完整上線
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white group-hover:text-sky-300 transition-colors mb-2">
+                通膨與薪資螺旋非對稱性檢定
+              </h3>
+              <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                探討停滯性通膨預期下，台灣物價上漲與回落對經常性薪資與實質薪資的動態傳導偏誤。
+              </p>
+              <div class="text-[11px] font-mono text-slate-400 space-y-1 mb-6">
+                <div>• 指標：CPI_YOY, W_REG_M</div>
+                <div>• 方法：Newey-West HAC, IRF</div>
+              </div>
+            </div>
+            
+            <a href="通膨與薪資.html" class="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition shadow-md shadow-sky-500/20">
+              <span>進入研究報告</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+
+          <!-- Card 2: AI & Labor Productivity -->
+          <div class="rounded-2xl bg-slate-950 border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between transition group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="w-9 h-9 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center font-bold text-sm border border-slate-700">
+                  02
+                </span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-slate-400 border border-slate-700">
+                  規劃中
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white group-hover:text-sky-300 transition-colors mb-2">
+                生成式 AI 與產業生產力極化
+              </h3>
+              <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                評估生成式 AI 在台灣高科技製造業與傳統白領服務業之技能偏向型技術進步 (SBTC) 效應。
+              </p>
+              <div class="text-[11px] font-mono text-slate-400 space-y-1 mb-6">
+                <div>• 指標：PROD_IND, EMP_SEC</div>
+                <div>• 方法：Difference-in-Differences</div>
+              </div>
+            </div>
+            <button class="w-full py-2 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-xs font-semibold cursor-not-allowed flex items-center justify-center gap-1.5" disabled>
+              <i class="fa-solid fa-lock text-[10px]"></i> 資料庫編整中
+            </button>
+          </div>
+
+          <!-- Card 3: Central Bank Taylor Rule -->
+          <div class="rounded-2xl bg-slate-950 border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between transition group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="w-9 h-9 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center font-bold text-sm border border-slate-700">
+                  03
+                </span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-slate-400 border border-slate-700">
+                  規劃中
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white group-hover:text-sky-300 transition-colors mb-2">
+                台灣央行貨幣政策反應函數
+              </h3>
+              <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                導入機器學習非線性泰勒法則 (Taylor Rule)，檢定重貼現率對產出缺口與匯率變動之權重。
+              </p>
+              <div class="text-[11px] font-mono text-slate-400 space-y-1 mb-6">
+                <div>• 指標：DISCOUNT_RATE, GDP_GAP</div>
+                <div>• 方法：Random Forest, TVP-VAR</div>
+              </div>
+            </div>
+            <button class="w-full py-2 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-xs font-semibold cursor-not-allowed flex items-center justify-center gap-1.5" disabled>
+              <i class="fa-solid fa-lock text-[10px]"></i> 成果整理中
+            </button>
+          </div>
+
+          <!-- Card 4: Housing & Wealth Effect -->
+          <div class="rounded-2xl bg-slate-950 border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between transition group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="w-9 h-9 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center font-bold text-sm border border-slate-700">
+                  04
+                </span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-slate-400 border border-slate-700">
+                  規劃中
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white group-hover:text-sky-300 transition-colors mb-2">
+                不動產景氣與實質消費財富效果
+              </h3>
+              <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                分析台灣都會區信義房價指數對民間實質消費支出的跨期擠出效應與信用抵押傳導。
+              </p>
+              <div class="text-[11px] font-mono text-slate-400 space-y-1 mb-6">
+                <div>• 指標：HOUSE_PRICE_IDX, CONS_REAL</div>
+                <div>• 方法：VECM 向量誤差修正模型</div>
+              </div>
+            </div>
+            <button class="w-full py-2 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-xs font-semibold cursor-not-allowed flex items-center justify-center gap-1.5" disabled>
+              <i class="fa-solid fa-lock text-[10px]"></i> 資料庫編整中
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Methodology & Tech Stack Section -->
+    <section id="tech-stack" class="py-14 px-4 sm:px-6 lg:px-8 scroll-mt-20">
+      <div class="max-w-7xl mx-auto">
+        <div class="border-b border-slate-800 pb-4 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Engineering & Econometrics</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white">研究方法論與資料科技架構</h2>
+          </div>
+          <p class="text-xs text-slate-400">標準化學術資料管線與現代運算工具</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Stack 1: Data Pipeline -->
+          <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col">
+            <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-lg mb-4 border border-sky-500/20">
+              <i class="fa-solid fa-database"></i>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2">AREMOS 數據調取與 ETL</h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4 flex-grow">
+              自動化處理 AREMOS 總體資料庫匯出之 Big5/CP950 編碼檔，消除前後中英詮釋 metadata，完成年增率（YoY）與季調特徵清洗。
+            </p>
+            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono">
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Pandas</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">NumPy</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">net.aremos.org.tw</span>
+            </div>
+          </div>
+
+          <!-- Stack 2: Econometric Modeling -->
+          <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg mb-4 border border-emerald-500/20">
+              <i class="fa-solid fa-square-root-variable"></i>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2">計量經濟檢驗與時間序列</h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4 flex-grow">
+              遵循嚴謹計量規範：ADF 單根定態檢驗、Newey-West (HAC) 異質變異自相關修正、Wald 非對稱係數檢定與 SVAR 脈衝反應。
+            </p>
+            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono">
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Statsmodels</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">SVAR</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">SciPy</span>
+            </div>
+          </div>
+
+          <!-- Stack 3: AI & Visual Presentation -->
+          <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg mb-4 border border-amber-500/20">
+              <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2">互動視覺化與模擬沙盒</h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-4 flex-grow">
+              結合現代前端 Chart.js 與 MathJax 數學渲染，建置雙 Y 軸互動走勢、動態事件高亮濾鏡及即時通膨傳導計算沙盒。
+            </p>
+            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono">
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Chart.js</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">MathJax TeX</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Tailwind CSS</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- AREMOS Database Portal & Guide for TKU -->
+    <section id="aremos-guide" class="py-14 px-4 sm:px-6 lg:px-8 bg-slate-900/50 border-t border-slate-800 scroll-mt-20">
+      <div class="max-w-7xl mx-auto bg-gradient-to-r from-brand-950 via-slate-900 to-slate-950 rounded-3xl p-6 sm:p-10 border border-slate-800 shadow-xl">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+          
+          <div class="space-y-4 max-w-2xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-sky-500/10 text-sky-400 text-xs font-semibold border border-sky-500/20">
+              <i class="fa-solid fa-school"></i> 淡江大學專屬查詢資源
+            </div>
+            <h3 class="text-2xl font-bold text-white leading-tight">
+              如何透過淡江校園網路調取 AREMOS 數據庫？
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              淡江大學師生可透過圖書館電子資料庫入口，或直接在淡水校園 IP 範圍內（含 SSL-VPN）登入 <strong class="text-sky-400">net.aremos.org.tw</strong>。本專案所採用之指標代碼與清洗管線均已公開於「通膨與薪資」專題頁面。
+            </p>
+            <div class="flex flex-wrap gap-4 pt-2">
+              <a href="https://net.aremos.org.tw" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 transition">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <span>開啟 AREMOS 資料庫官網</span>
+              </a>
+              <a href="通膨與薪資.html#code" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 text-xs font-semibold border border-sky-500/30 transition">
+                <i class="fa-solid fa-code"></i>
+                <span>查看 Python 清洗程式碼</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="w-full lg:w-auto p-5 rounded-2xl bg-slate-950 border border-slate-800 text-xs font-mono space-y-2 text-slate-300">
+            <div class="text-sky-400 font-bold mb-2 flex items-center gap-1.5 font-sans">
+              <i class="fa-solid fa-bookmark text-rose-400"></i> 主題一常用檢索代碼
+            </div>
+            <div><span class="text-slate-500">庫別:</span> PRICEM (物價統計資料庫)</div>
+            <div><span class="text-slate-500">變數:</span> <span class="text-rose-400">CPI_YOY</span> (消費者物價年增率)</div>
+            <div><span class="text-slate-500">庫別:</span> EARNM (薪資動向資料庫)</div>
+            <div><span class="text-slate-500">變數:</span> <span class="text-sky-400">W_REG_M</span> (經常性名目薪資)</div>
+            <div class="pt-2 text-[10px] text-slate-400 font-sans border-t border-slate-800">
+              * 匯出時請勾選 CSV 格式並選擇民國 70 年 (1981) 至今之月資料
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Academic Footer -->
+  <footer class="bg-slate-950 border-t border-slate-800 py-10 px-4 sm:px-6 lg:px-8 text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-lg bg-brand-800 text-white flex items-center justify-center font-bold text-sm">
+          TKU
+        </div>
+        <div>
+          <div class="font-bold text-slate-200">淡江大學 經濟學系《AI 與經濟研究報告》專案成果庫</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Empirical Economics and AI Research Lab</div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-6 text-[11px]">
+        <a href="通膨與薪資.html" class="text-slate-300 hover:text-sky-400 transition-colors font-medium">通膨與薪資專題</a>
+        <a href="#topics" class="text-slate-400 hover:text-slate-200 transition-colors">專題架構</a>
+        <a href="#tech-stack" class="text-slate-400 hover:text-slate-200 transition-colors">技術棧</a>
+        <a href="https://net.aremos.org.tw" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 transition-colors">AREMOS 官網</a>
+      </div>
+
+      <div class="text-center md:text-right text-[11px] text-slate-400 leading-normal">
+        <div>本專題研究成果供學術討論與教學展示使用</div>
+        <div>資料來源：行政院主計總處、中央銀行、台灣經濟新報、AREMOS 資料庫</div>
+      </div>
+
+    </div>
+  </footer>
+
+</body>
+</html>
