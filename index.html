@@ -3,13 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 與經濟研究報告專題平台 | 淡江大學經濟學系 TKU AI & Economics Lab</title>
+  <title>AI與經濟研究報告專題平台 | 淡江大學經濟學系</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <!-- FontAwesome 6 CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   
+  <!-- MathJax Configuration & Loader -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
   <!-- Google Fonts: Inter & Noto Sans TC -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,12 +49,6 @@
               800: '#0c4a6e',
               900: '#082f49',
               950: '#031726'
-            },
-            accent: {
-              red: '#f43f5e',
-              emerald: '#10b981',
-              amber: '#f59e0b',
-              violet: '#8b5cf6'
             }
           }
         }
@@ -49,114 +57,118 @@
   </script>
 
   <style>
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-    /* Card Glow and Hover Effects */
     .hero-glow {
-      background: radial-gradient(circle at 50% 20%, rgba(2, 132, 199, 0.15) 0%, rgba(3, 23, 38, 0) 70%);
+      background: radial-gradient(circle at 50% 15%, rgba(2, 132, 199, 0.18) 0%, rgba(3, 23, 38, 0) 70%);
     }
     .featured-card-border {
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.5), rgba(2, 132, 199, 0.1), rgba(16, 185, 129, 0.3));
     }
+    .token-kw { color: #f43f5e; font-weight: 600; }
+    .token-func { color: #38bdf8; font-weight: 500; }
+    .token-str { color: #34d399; }
+    .token-comment { color: #94a3b8; font-style: italic; }
+    .token-num { color: #fbbf24; }
   </style>
 </head>
 
 <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
 
-  <!-- Top Announcement Bar -->
+  <!-- Top Live Notification Bar -->
   <aside class="bg-gradient-to-r from-brand-950 via-slate-900 to-brand-950 border-b border-slate-800 text-xs py-2 px-4 text-center text-slate-300">
     <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
       <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold text-[11px] border border-emerald-500/30">
-        <i class="fa-solid fa-circle text-[6px] mr-1.5 animate-pulse text-emerald-400"></i> 最新專案上線
+        <i class="fa-solid fa-circle text-[6px] mr-1.5 animate-pulse text-emerald-400"></i> 最新研究進度
       </span>
-      <span>核心研究主題一「通膨與薪資非對稱性檢定」已完成實證計量建模！</span>
-      <a href="通膨與薪資.html" class="text-sky-400 hover:text-sky-300 font-medium underline underline-offset-2 ml-1 inline-flex items-center gap-1">
-        立即瀏覽報告 <i class="fa-solid fa-arrow-right text-[10px]"></i>
-      </a>
+      <span>主題一「台灣薪資—物價螺旋機制之非對稱性檢定」已完成 SVAR 與 HAC 計量建模！</span>
+      <button onclick="navigateTo('topic1')" class="text-sky-400 hover:text-sky-300 font-medium underline underline-offset-2 ml-1 inline-flex items-center gap-1 cursor-pointer">
+        立即瀏覽專題報告 <i class="fa-solid fa-arrow-right text-[10px]"></i>
+      </button>
     </div>
   </aside>
 
-  <!-- Sticky Navigation Header -->
-  <header class="sticky top-0 z-50 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 transition-all">
+  <!-- Sticky Main Navbar -->
+  <header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
-      <!-- Brand & TKU Affiliation -->
-      <a href="home.html" class="flex items-center space-x-3 group">
+      <!-- Logo & TKU Identity -->
+      <button onclick="navigateTo('home')" class="flex items-center space-x-3 group text-left">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-800 via-brand-600 to-sky-400 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-sky-500/10 group-hover:scale-105 transition-transform">
           TKU
         </div>
         <div>
           <div class="flex items-center gap-2">
             <span class="text-[11px] font-bold tracking-wider text-sky-400 uppercase">淡江大學 經濟學系</span>
-            <span class="px-1.5 py-0.2 rounded text-[9px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">Lab Hub</span>
+            <span class="px-1.5 py-0.2 rounded text-[9px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">AI Lab</span>
           </div>
-          <h1 class="text-sm sm:text-base font-bold text-white tracking-tight leading-tight group-hover:text-sky-300 transition-colors">
-            AI 與經濟研究專題平台
-          </h1>
+          <div class="text-sm sm:text-base font-bold text-white tracking-tight leading-tight group-hover:text-sky-300 transition-colors">
+            AI 與經濟研究報告專題平台
+          </div>
         </div>
-      </a>
+      </button>
 
-      <!-- Desktop Nav Menu -->
-      <nav class="hidden md:flex items-center space-x-7 text-sm font-medium text-slate-300">
-        <a href="#featured" class="hover:text-sky-400 transition-colors flex items-center gap-1.5">
-          <i class="fa-solid fa-fire text-rose-400 text-xs"></i> 焦點主題
-        </a>
-        <a href="#topics" class="hover:text-sky-400 transition-colors">專題矩陣</a>
-        <a href="#indicators" class="hover:text-sky-400 transition-colors">總經指標板</a>
-        <a href="#tech-stack" class="hover:text-sky-400 transition-colors">研究工具棧</a>
-        <a href="#aremos-guide" class="hover:text-sky-400 transition-colors">AREMOS 資源</a>
+      <!-- View Selector Tabs -->
+      <nav class="hidden md:flex items-center space-x-2 text-sm font-medium">
+        <button id="nav-btn-home" onclick="navigateTo('home')" class="px-3.5 py-2 rounded-lg text-white bg-slate-800/90 font-semibold border border-slate-700 transition flex items-center gap-2">
+          <i class="fa-solid fa-house text-xs"></i> 專題首頁
+        </button>
+        <button id="nav-btn-topic1" onclick="navigateTo('topic1')" class="px-3.5 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent transition flex items-center gap-2">
+          <i class="fa-solid fa-chart-line text-xs text-rose-400"></i> 主題一：通膨與薪資報告
+        </button>
       </nav>
 
-      <!-- Action Button to Key Research Document -->
+      <!-- Quick Action CTA -->
       <div class="flex items-center gap-3">
-        <a href="通膨與薪資.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-brand-600 hover:from-sky-400 hover:to-brand-500 text-white text-xs sm:text-sm font-semibold shadow-md shadow-sky-500/20 hover:shadow-sky-500/30 transition-all transform hover:-translate-y-0.5">
-          <span>通膨與薪資報告</span>
-          <i class="fa-solid fa-arrow-right text-xs"></i>
-        </a>
+        <button id="header-action-btn" onclick="toggleActiveView()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-brand-600 hover:from-sky-400 hover:to-brand-500 text-white text-xs sm:text-sm font-semibold shadow-md shadow-sky-500/20 transition-all transform hover:-translate-y-0.5">
+          <span id="header-action-text">進入主題一報告</span>
+          <i id="header-action-icon" class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
       </div>
     </div>
   </header>
 
-  <main class="flex-grow">
-    <!-- Hero Section -->
-    <section class="relative pt-16 pb-20 sm:pt-20 sm:pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden hero-glow border-b border-slate-800/80">
-      <!-- Background Matrix Grid Texture -->
+  <!-- ========================================================================= -->
+  <!-- VIEW 1: HOME PAGE (首頁視圖) -->
+  <!-- ========================================================================= -->
+  <div id="view-home" class="view-panel flex-grow">
+    
+    <!-- Hero Banner Section -->
+    <section class="relative pt-16 pb-20 sm:pt-20 sm:pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden hero-glow border-b border-slate-800/80">
       <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:28px_28px] pointer-events-none"></div>
 
       <div class="max-w-5xl mx-auto text-center relative z-10">
-        <!-- Academic Pill Tag -->
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-700/80 text-sky-400 text-xs font-semibold mb-6 shadow-sm">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-          <span>淡江大學 總體經濟與人工智慧計量實證實驗室</span>
+          <span>淡江大學 總體經濟與人工智慧計量實證專題</span>
           <span class="text-slate-600">•</span>
-          <span class="text-slate-300">AREMOS 數據庫驅動</span>
+          <span class="text-slate-300">AREMOS 數據庫支援</span>
         </div>
 
-        <h2 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6">
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6">
           實證經濟學 × 人工智慧
           <span class="block text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-300 to-indigo-400 mt-2">
             探索台灣總體經濟動態傳導機制
           </span>
-        </h2>
+        </h1>
 
         <p class="max-w-3xl mx-auto text-sm sm:text-base md:text-lg text-slate-300 leading-relaxed font-normal mb-10">
           整合台灣 AREMOS 總體經濟資料庫、現代時間序列計量方法（SVAR、HAC 穩健標準誤、非對稱非線性模型）與機器學習預測架構，提供具備實證基礎與政策前瞻洞見的高品質學術專題研究。
         </p>
 
-        <!-- CTA Buttons -->
+        <!-- Direct CTA Button Group -->
         <div class="flex flex-wrap justify-center items-center gap-4 text-sm font-semibold">
-          <a href="通膨與薪資.html" class="px-6 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold flex items-center gap-2.5 shadow-lg shadow-sky-500/25 transition-all transform hover:-translate-y-0.5">
+          <button onclick="navigateTo('topic1')" class="px-6 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold flex items-center gap-2.5 shadow-lg shadow-sky-500/25 transition-all transform hover:-translate-y-0.5 cursor-pointer">
             <i class="fa-solid fa-book-open"></i>
             <span>進入主題一：通膨與薪資專題報告</span>
             <i class="fa-solid fa-arrow-right text-xs"></i>
-          </a>
-          <a href="#topics" class="px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700/80 flex items-center gap-2 transition-all">
-            <i class="fa-solid fa-list-check text-sky-400"></i>
-            <span>檢視研究專題矩陣</span>
+          </button>
+          <a href="#macro-indicators" class="px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700/80 flex items-center gap-2 transition-all">
+            <i class="fa-solid fa-chart-simple text-sky-400"></i>
+            <span>觀測總經即時數據</span>
           </a>
         </div>
 
@@ -164,26 +176,26 @@
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-14 max-w-4xl mx-auto text-left">
           <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
             <div class="text-2xl font-black text-white font-mono">1981-2024</div>
-            <div class="text-xs text-slate-400 mt-1">AREMOS 縱橫期跨度</div>
+            <div class="text-xs text-slate-400 mt-1">AREMOS 月度序列跨度</div>
           </div>
           <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
             <div class="text-2xl font-black text-sky-400 font-mono">SVAR / HAC</div>
-            <div class="text-xs text-slate-400 mt-1">計量結構模型規格</div>
+            <div class="text-xs text-slate-400 mt-1">結構性計量估計規格</div>
           </div>
           <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
             <div class="text-2xl font-black text-teal-400 font-mono">100% Python</div>
-            <div class="text-xs text-slate-400 mt-1">全自動清洗與建模管線</div>
+            <div class="text-xs text-slate-400 mt-1">自動化 ETL 與清洗腳本</div>
           </div>
           <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
             <div class="text-2xl font-black text-rose-400 font-mono">Asymmetric</div>
-            <div class="text-xs text-slate-400 mt-1">薪資黏性與螺旋檢定</div>
+            <div class="text-xs text-slate-400 mt-1">非對稱薪資僵固性檢驗</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Macro Indicators Ticker / Mini Dashboard -->
-    <section id="indicators" class="py-10 bg-slate-900/70 border-b border-slate-800/80 px-4 sm:px-6 lg:px-8">
+    <!-- Macro Indicators Section -->
+    <section id="macro-indicators" class="py-12 bg-slate-900/60 border-b border-slate-800/80 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
@@ -192,7 +204,7 @@
               <i class="fa-solid fa-chart-line text-emerald-400"></i> 台灣總體經濟關鍵觀測指標
             </h3>
           </div>
-          <span class="text-xs text-slate-400">基準期：主計總處 / AREMOS 月度最新統計</span>
+          <span class="text-xs text-slate-400">基準期：主計總處 / AREMOS 最新發布統計</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -203,101 +215,91 @@
               <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">主題一核心</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="text-2xl font-black text-rose-400 font-mono">+2.18%</span>
+              <span class="text-2xl font-black text-rose-400 font-mono">+2.42%</span>
               <span class="text-xs text-slate-400 font-mono">通膨警戒線 2.0%</span>
             </div>
-            <!-- Mini SVG Sparkline -->
-            <div class="mt-3 flex items-center justify-between text-xs">
-              <svg class="w-24 h-6 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 100 25">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M0 20 L20 18 L40 8 L60 14 L80 5 L100 11"/>
-              </svg>
-              <span class="text-[11px] text-slate-400">傳導遞延期 2~4 季</span>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-400">
+              <span class="text-slate-400">傳導遞延期：約 2~4 季</span>
+              <button onclick="navigateTo('topic1')" class="text-sky-400 hover:text-sky-300 text-[11px] underline">檢視假說</button>
             </div>
           </div>
 
-          <!-- Metric 2: Regular Wage -->
+          <!-- Metric 2: Nominal Wage -->
           <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition">
             <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
               <span>經常性名目薪資年增率</span>
               <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">W_REG_M</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="text-2xl font-black text-sky-400 font-mono">+2.45%</span>
+              <span class="text-2xl font-black text-sky-400 font-mono">+2.68%</span>
               <span class="text-xs text-emerald-400 font-mono"><i class="fa-solid fa-arrow-trend-up"></i> 溫和補償</span>
             </div>
-            <div class="mt-3 flex items-center justify-between text-xs">
-              <svg class="w-24 h-6 text-sky-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 100 25">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M0 22 L25 19 L50 15 L75 12 L100 9"/>
-              </svg>
-              <span class="text-[11px] text-slate-400">向下僵固性顯著</span>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-400">
+              <span class="text-slate-400">名目薪資具向下僵固</span>
+              <button onclick="navigateTo('topic1')" class="text-sky-400 hover:text-sky-300 text-[11px] underline">查看數據</button>
             </div>
           </div>
 
           <!-- Metric 3: Real Wage Gap -->
           <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition">
             <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
-              <span>實質經常性薪資增率 (淨額)</span>
-              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">購買力平減</span>
+              <span>實質薪資成長差額 (Wage - CPI)</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">購買力淨值</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="text-2xl font-black text-amber-400 font-mono">+0.27%</span>
-              <span class="text-xs text-slate-400 font-mono">微幅轉正</span>
+              <span class="text-2xl font-black text-amber-400 font-mono">+0.26%</span>
+              <span class="text-xs text-slate-400 font-mono">微幅實質利潤</span>
             </div>
-            <div class="mt-3 flex items-center justify-between text-xs">
-              <svg class="w-24 h-6 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 100 25">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M0 24 L25 22 L50 25 L75 18 L100 12"/>
-              </svg>
-              <span class="text-[11px] text-slate-400">面臨高通膨侵蝕</span>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-400">
+              <span class="text-slate-400">受通膨高檔強烈擠壓</span>
+              <button onclick="navigateTo('topic1')" class="text-sky-400 hover:text-sky-300 text-[11px] underline">沙盒試算</button>
             </div>
           </div>
 
-          <!-- Metric 4: Unemployment Rate -->
+          <!-- Metric 4: Unemployment -->
           <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition">
             <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
-              <span>失業率 (季調後)</span>
+              <span>失業率 (季節調整後)</span>
               <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">自然率水準</span>
             </div>
             <div class="flex items-baseline gap-2">
-              <span class="text-2xl font-black text-emerald-400 font-mono">3.38%</span>
-              <span class="text-xs text-slate-400 font-mono">歷史低檔徘徊</span>
+              <span class="text-2xl font-black text-emerald-400 font-mono">3.40%</span>
+              <span class="text-xs text-slate-400 font-mono">充分就業區間</span>
             </div>
-            <div class="mt-3 flex items-center justify-between text-xs">
-              <svg class="w-24 h-6 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 100 25">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M0 8 L25 11 L50 14 L75 17 L100 20"/>
-              </svg>
-              <span class="text-[11px] text-slate-400">勞動市場供給緊俏</span>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-400">
+              <span class="text-slate-400">勞動市場邊際緊俏</span>
+              <button onclick="navigateTo('topic1')" class="text-sky-400 hover:text-sky-300 text-[11px] underline">迴歸控制</button>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Featured Project Highlight Banner (通膨與薪資) -->
-    <section id="featured" class="py-14 px-4 sm:px-6 lg:px-8 scroll-mt-20">
+    <!-- Featured Project Highlight Banner -->
+    <section class="py-14 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto">
         <div class="border-b border-slate-800 pb-4 mb-8 flex items-center justify-between">
           <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-rose-400">Featured Milestone</span>
-            <h2 class="text-2xl sm:text-3xl font-bold text-white">核心重點專題成果展示</h2>
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-400">Featured Study</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white">重點專題成果展示</h2>
           </div>
-          <span class="text-xs text-slate-400 hidden sm:inline-block">嚴謹計量規格 • 完整原始碼釋出</span>
+          <span class="text-xs text-slate-400 hidden sm:inline-block">點擊即可無縫進入完整報告</span>
         </div>
 
-        <!-- Featured Big Card Container -->
+        <!-- Featured Card Wrapper -->
         <div class="relative p-[1.5px] rounded-3xl featured-card-border shadow-2xl shadow-sky-950/50 group overflow-hidden">
           <div class="relative rounded-[23px] bg-gradient-to-br from-slate-900 via-slate-950 to-brand-950 p-6 sm:p-10 flex flex-col lg:flex-row items-center justify-between gap-8">
             
-            <!-- Left Info Block -->
             <div class="lg:w-7/12 space-y-5">
               <div class="flex flex-wrap items-center gap-2.5">
                 <span class="px-3 py-1 rounded-md bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold tracking-wide flex items-center gap-1.5">
                   <i class="fa-solid fa-star text-[10px]"></i> 專案主題一
                 </span>
                 <span class="px-2.5 py-1 rounded-md bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-mono">
-                  net.aremos.org.tw
+                  AREMOS 資料庫
                 </span>
                 <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
-                  SVAR / HAC 穩健回歸
+                  SVAR / HAC 穩健標準誤
                 </span>
               </div>
 
@@ -310,7 +312,6 @@
                 實證檢驗台灣勞動市場在面對輸入型物價衝擊與通膨降溫時的非對稱反應。研究發現，在通膨飆漲期經常性薪資上調呈現顯著僵固，資方傾向以非經常性獎金替代底薪調整；而在物價回落時亦無追補，導致實質購買力呈現棘輪狀系統性受損。
               </p>
 
-              <!-- Highlights list -->
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-300 pt-2">
                 <div class="flex items-center gap-2">
                   <i class="fa-solid fa-check text-emerald-400"></i>
@@ -330,22 +331,20 @@
                 </div>
               </div>
 
-              <!-- Action Link -->
               <div class="pt-3 flex flex-wrap items-center gap-4">
-                <a href="通膨與薪資.html" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-brand-600 hover:from-sky-400 hover:to-brand-500 text-white font-bold text-sm shadow-xl shadow-sky-500/25 transition-all transform hover:-translate-y-0.5">
+                <button onclick="navigateTo('topic1')" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-brand-600 hover:from-sky-400 hover:to-brand-500 text-white font-bold text-sm shadow-xl shadow-sky-500/25 transition-all transform hover:-translate-y-0.5 cursor-pointer">
                   <span>進入「通膨與薪資」完整專題報告</span>
                   <i class="fa-solid fa-arrow-right"></i>
-                </a>
+                </button>
                 <span class="text-xs text-slate-400 flex items-center gap-1.5">
-                  <i class="fa-solid fa-file-lines text-sky-400"></i> 內含互動沙盒試算器
+                  <i class="fa-solid fa-calculator text-sky-400"></i> 內含互動沙盒試算器
                 </span>
               </div>
             </div>
 
-            <!-- Right Visual Interactive Mockup -->
+            <!-- Preview Terminal Mockup -->
             <div class="lg:w-5/12 w-full">
-              <a href="通膨與薪資.html" class="block relative rounded-2xl bg-slate-900 border border-slate-700/80 p-5 shadow-2xl hover:border-sky-500/60 transition group/mockup">
-                <!-- Mini Terminal Header -->
+              <div onclick="navigateTo('topic1')" class="block cursor-pointer relative rounded-2xl bg-slate-900 border border-slate-700/80 p-5 shadow-2xl hover:border-sky-500/60 transition group/mockup">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-xs text-slate-400">
                   <span class="flex items-center gap-1.5 font-mono text-slate-300">
                     <i class="fa-solid fa-terminal text-sky-400"></i> wage_price_spiral_irf.py
@@ -353,20 +352,17 @@
                   <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-emerald-400 font-mono">OLS-HAC p &lt; 0.01</span>
                 </div>
 
-                <!-- Graphic Preview -->
                 <div class="mt-4 space-y-3">
                   <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs font-mono text-sky-300">
-                    <div>$ \Delta W_t = \alpha + \sum \beta^+ \Delta \text{CPI}^+ + \sum \beta^- \Delta \text{CPI}^- + \varepsilon_t $</div>
+                    <div>$$ \Delta W_t = \alpha + \sum \beta^+ \Delta \text{CPI}^+ + \sum \beta^- \Delta \text{CPI}^- + \varepsilon_t $$</div>
                   </div>
 
-                  <!-- Mock Graph Preview -->
-                  <div class="h-32 bg-slate-950 rounded-lg p-3 border border-slate-800/80 flex flex-col justify-end relative overflow-hidden">
+                  <div class="h-28 bg-slate-950 rounded-lg p-3 border border-slate-800/80 flex flex-col justify-end relative overflow-hidden">
                     <div class="absolute top-2 left-3 text-[10px] text-slate-400 font-sans flex items-center gap-2">
                       <span class="w-2 h-2 rounded-full bg-rose-500"></span> CPI 衝擊
                       <span class="w-2 h-2 rounded-full bg-sky-400"></span> 名目薪資反應
                     </div>
-                    <!-- Mock chart line graphic with SVG -->
-                    <svg class="w-full h-20 text-sky-400" viewBox="0 0 200 60" fill="none">
+                    <svg class="w-full h-16 text-sky-400" viewBox="0 0 200 60" fill="none">
                       <path d="M0 45 Q 30 10, 60 25 T 120 40 T 200 48" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
                       <path d="M0 50 Q 20 45, 50 15 T 100 20 T 200 35" stroke="#f43f5e" stroke-width="1.8" stroke-dasharray="3,3" fill="none"/>
                     </svg>
@@ -375,11 +371,11 @@
                   <div class="flex items-center justify-between text-xs text-slate-300 pt-1">
                     <span>非對稱檢驗結果：<strong class="text-rose-400 font-bold">拒絕對稱性 (p = 0.003)</strong></span>
                     <span class="text-sky-400 font-medium group-hover/mockup:translate-x-1 transition-transform inline-flex items-center gap-1">
-                      查閱完整圖表 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                      點擊查看完整圖表 <i class="fa-solid fa-chevron-right text-[10px]"></i>
                     </span>
                   </div>
                 </div>
-              </a>
+              </div>
             </div>
 
           </div>
@@ -387,20 +383,20 @@
       </div>
     </section>
 
-    <!-- Research Topics Matrix Grid -->
-    <section id="topics" class="py-14 px-4 sm:px-6 lg:px-8 bg-slate-900/40 border-y border-slate-800/80 scroll-mt-20">
+    <!-- Research Topics Portfolio Matrix -->
+    <section class="py-14 px-4 sm:px-6 lg:px-8 bg-slate-900/40 border-t border-slate-800/80">
       <div class="max-w-7xl mx-auto">
         <div class="border-b border-slate-800 pb-4 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
           <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Curriculum & Topics</span>
-            <h2 class="text-2xl sm:text-3xl font-bold text-white">專題研究架構矩陣 (Research Portfolio)</h2>
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Research Matrix</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white">專題研究架構矩陣 (Portfolio)</h2>
           </div>
-          <p class="text-xs text-slate-400">淡江大學 AI 與經濟研究專案完整子題規劃</p>
+          <p class="text-xs text-slate-400">淡江大學 AI 與經濟研究專案子題規劃</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-          <!-- Card 1: Core Topic 1 (Active Link) -->
+          <!-- Card 1: Active Topic 1 -->
           <div class="rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-sky-500/50 hover:border-sky-400 p-6 flex flex-col justify-between shadow-lg shadow-sky-950/40 transition group">
             <div>
               <div class="flex items-center justify-between mb-4">
@@ -408,7 +404,7 @@
                   01
                 </span>
                 <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  完整上線
+                  已完成上線
                 </span>
               </div>
               <h3 class="text-lg font-bold text-white group-hover:text-sky-300 transition-colors mb-2">
@@ -423,10 +419,10 @@
               </div>
             </div>
             
-            <a href="通膨與薪資.html" class="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition shadow-md shadow-sky-500/20">
-              <span>進入研究報告</span>
+            <button onclick="navigateTo('topic1')" class="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition shadow-md shadow-sky-500/20 cursor-pointer">
+              <span>進入主題一專題報告</span>
               <i class="fa-solid fa-arrow-right"></i>
-            </a>
+            </button>
           </div>
 
           <!-- Card 2: AI & Labor Productivity -->
@@ -456,7 +452,7 @@
             </button>
           </div>
 
-          <!-- Card 3: Central Bank Taylor Rule -->
+          <!-- Card 3: Monetary Policy Taylor Rule -->
           <div class="rounded-2xl bg-slate-950 border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between transition group">
             <div>
               <div class="flex items-center justify-between mb-4">
@@ -483,7 +479,7 @@
             </button>
           </div>
 
-          <!-- Card 4: Housing & Wealth Effect -->
+          <!-- Card 4: Housing and Wealth Effect -->
           <div class="rounded-2xl bg-slate-950 border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between transition group">
             <div>
               <div class="flex items-center justify-between mb-4">
@@ -513,119 +509,483 @@
         </div>
       </div>
     </section>
+  </div>
 
-    <!-- Methodology & Tech Stack Section -->
-    <section id="tech-stack" class="py-14 px-4 sm:px-6 lg:px-8 scroll-mt-20">
+  <!-- ========================================================================= -->
+  <!-- VIEW 2: TOPIC 1 REPORT VIEW (主題一完整專題報告視圖) -->
+  <!-- ========================================================================= -->
+  <div id="view-topic1" class="view-panel hidden flex-grow">
+    
+    <!-- Topic 1 Header Bar -->
+    <section class="bg-gradient-to-b from-slate-900 via-brand-950 to-slate-900 text-white pt-10 pb-16 px-4 sm:px-6 lg:px-8 border-b border-slate-800 relative">
       <div class="max-w-7xl mx-auto">
-        <div class="border-b border-slate-800 pb-4 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-          <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Engineering & Econometrics</span>
-            <h2 class="text-2xl sm:text-3xl font-bold text-white">研究方法論與資料科技架構</h2>
-          </div>
-          <p class="text-xs text-slate-400">標準化學術資料管線與現代運算工具</p>
+        <!-- Return Navigation Breadcrumb -->
+        <div class="flex items-center gap-3 mb-6">
+          <button onclick="navigateTo('home')" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>返回專題首頁</span>
+          </button>
+          <span class="text-slate-600">/</span>
+          <span class="text-xs text-sky-400 font-mono font-medium">主題一：通膨與薪資專題</span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-          <!-- Stack 1: Data Pipeline -->
-          <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col">
-            <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-lg mb-4 border border-sky-500/20">
-              <i class="fa-solid fa-database"></i>
-            </div>
-            <h3 class="text-base font-bold text-white mb-2">AREMOS 數據調取與 ETL</h3>
-            <p class="text-xs text-slate-300 leading-relaxed mb-4 flex-grow">
-              自動化處理 AREMOS 總體資料庫匯出之 Big5/CP950 編碼檔，消除前後中英詮釋 metadata，完成年增率（YoY）與季調特徵清洗。
-            </p>
-            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono">
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Pandas</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">NumPy</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">net.aremos.org.tw</span>
-            </div>
+        <div class="max-w-4xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-sky-300 text-xs font-semibold mb-4 border border-brand-400/30">
+            <i class="fa-solid fa-scale-balanced"></i> 學術專題研究報告 • 主題一
           </div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight mb-4 tracking-tight">
+            台灣薪資—物價螺旋機制之非對稱性檢定
+            <span class="block text-xl sm:text-2xl md:text-3xl font-medium text-sky-400 mt-2">
+              停滯性通膨預期下的動態傳導實證
+            </span>
+          </h1>
+          <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-normal">
+            本研究聚焦台灣勞動市場在面臨物價急升與回落時的結構性調整彈性。透過台灣 <strong>AREMOS 總體經濟資料庫</strong> 的 CPI 與受雇員工實質/名目經常性薪資數據，檢驗新凱因斯工資僵固性與非對稱傳導效應。
+          </p>
+        </div>
 
-          <!-- Stack 2: Econometric Modeling -->
-          <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg mb-4 border border-emerald-500/20">
-              <i class="fa-solid fa-square-root-variable"></i>
-            </div>
-            <h3 class="text-base font-bold text-white mb-2">計量經濟檢驗與時間序列</h3>
-            <p class="text-xs text-slate-300 leading-relaxed mb-4 flex-grow">
-              遵循嚴謹計量規範：ADF 單根定態檢驗、Newey-West (HAC) 異質變異自相關修正、Wald 非對稱係數檢定與 SVAR 脈衝反應。
-            </p>
-            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono">
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Statsmodels</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">SVAR</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">SciPy</span>
-            </div>
-          </div>
-
-          <!-- Stack 3: AI & Visual Presentation -->
-          <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col">
-            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg mb-4 border border-amber-500/20">
-              <i class="fa-solid fa-chart-pie"></i>
-            </div>
-            <h3 class="text-base font-bold text-white mb-2">互動視覺化與模擬沙盒</h3>
-            <p class="text-xs text-slate-300 leading-relaxed mb-4 flex-grow">
-              結合現代前端 Chart.js 與 MathJax 數學渲染，建置雙 Y 軸互動走勢、動態事件高亮濾鏡及即時通膨傳導計算沙盒。
-            </p>
-            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono">
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Chart.js</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">MathJax TeX</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Tailwind CSS</span>
-            </div>
-          </div>
-
+        <!-- Meta badges -->
+        <div class="flex flex-wrap items-center gap-2.5 mt-6 text-xs">
+          <span class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-database text-sky-400"></i> AREMOS 資料庫 (PRICEM / EARNM)
+          </span>
+          <span class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-microchip text-rose-400"></i> 新凱因斯工資向下僵固 (Wage Rigidity)
+          </span>
+          <span class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-emerald-400"></i> HAC (Newey-West) 穩健標準誤
+          </span>
+          <span class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-wave-square text-amber-400"></i> SVAR 脈衝衝擊反應函數 (IRF)
+          </span>
         </div>
       </div>
     </section>
 
-    <!-- AREMOS Database Portal & Guide for TKU -->
-    <section id="aremos-guide" class="py-14 px-4 sm:px-6 lg:px-8 bg-slate-900/50 border-t border-slate-800 scroll-mt-20">
-      <div class="max-w-7xl mx-auto bg-gradient-to-r from-brand-950 via-slate-900 to-slate-950 rounded-3xl p-6 sm:p-10 border border-slate-800 shadow-xl">
-        <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
-          
-          <div class="space-y-4 max-w-2xl">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-sky-500/10 text-sky-400 text-xs font-semibold border border-sky-500/20">
-              <i class="fa-solid fa-school"></i> 淡江大學專屬查詢資源
+    <!-- Content Body Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-14">
+
+      <!-- Section: Hypothesis H1 & Mechanism -->
+      <section>
+        <div class="border-b border-slate-800 pb-3 mb-6">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Section 01</span>
+          <h2 class="text-2xl font-bold text-white">研究假說與經濟學理傳導機制</h2>
+        </div>
+
+        <!-- H1 Card -->
+        <div class="rounded-2xl p-6 sm:p-8 bg-gradient-to-br from-slate-900 via-slate-900 to-brand-950 border border-sky-500/30 shadow-lg mb-8">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-sky-500 text-slate-950 flex-shrink-0 flex items-center justify-center text-xl font-black shadow-md">
+              H₁
             </div>
-            <h3 class="text-2xl font-bold text-white leading-tight">
-              如何透過淡江校園網路調取 AREMOS 數據庫？
-            </h3>
-            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              淡江大學師生可透過圖書館電子資料庫入口，或直接在淡水校園 IP 範圍內（含 SSL-VPN）登入 <strong class="text-sky-400">net.aremos.org.tw</strong>。本專案所採用之指標代碼與清洗管線均已公開於「通膨與薪資」專題頁面。
+            <div>
+              <div class="inline-block px-2.5 py-0.5 rounded text-xs font-semibold bg-sky-500/20 text-sky-300 mb-2 border border-sky-500/30">
+                核心研究假說 (Core Hypothesis)
+              </div>
+              <h3 class="text-lg sm:text-xl font-bold text-white mb-2 leading-relaxed">
+                CPI 年增率對經常性薪資成長的傳導具備「非對稱性」與「時間遞延性」
+              </h3>
+              <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-normal">
+                在物價劇烈攀升時期，由於勞資合約調整時滯與資方風險規避，名目經常性薪資上調呈現僵固；但在通膨回落階段，雇主亦無足額之超額補償機制。這使得勞工的<strong>「實質薪資成長率」在整個通膨週期中呈現系統性下偏 (Systematic Downward Bias)</strong>，形成生活成本受損的棘輪現象。
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Theoretical Transmission Channels -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-900/90 rounded-2xl p-6 border border-slate-800 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="w-9 h-9 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-sm border border-rose-500/30">
+                <i class="fa-solid fa-lock"></i>
+              </span>
+              <h4 class="text-base font-bold text-white">新凱因斯工資僵固性 (Wage Rigidity)</h4>
+            </div>
+            <p class="text-sm text-slate-300 leading-relaxed mb-4">
+              合約談判往往落後於即時物價波動。名目薪資通常具備向下僵固；但在高通膨階段，台灣企業雇主普遍傾向以<strong>一次性年終獎金、非經常性紅利</strong>代替經常性底薪的調升，避免未來營運成本結構僵化，從而壓抑常態薪資向上彈性。
             </p>
-            <div class="flex flex-wrap gap-4 pt-2">
-              <a href="https://net.aremos.org.tw" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 transition">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                <span>開啟 AREMOS 資料庫官網</span>
-              </a>
-              <a href="通膨與薪資.html#code" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 text-xs font-semibold border border-sky-500/30 transition">
-                <i class="fa-solid fa-code"></i>
-                <span>查看 Python 清洗程式碼</span>
-              </a>
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400 flex items-center gap-2 font-mono">
+              <i class="fa-solid fa-arrow-right text-brand-500"></i>
+              <span>傳導結果：$\partial \text{Wage}^{\text{regular}} / \partial \text{CPI}^+ < \partial \text{Wage}^{\text{total}} / \partial \text{CPI}^+$</span>
             </div>
           </div>
 
-          <div class="w-full lg:w-auto p-5 rounded-2xl bg-slate-950 border border-slate-800 text-xs font-mono space-y-2 text-slate-300">
-            <div class="text-sky-400 font-bold mb-2 flex items-center gap-1.5 font-sans">
-              <i class="fa-solid fa-bookmark text-rose-400"></i> 主題一常用檢索代碼
+          <div class="bg-slate-900/90 rounded-2xl p-6 border border-slate-800 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="w-9 h-9 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-sm border border-sky-500/30">
+                <i class="fa-solid fa-bullhorn"></i>
+              </span>
+              <h4 class="text-base font-bold text-white">工會談判力量與黏性資訊預期</h4>
             </div>
-            <div><span class="text-slate-500">庫別:</span> PRICEM (物價統計資料庫)</div>
-            <div><span class="text-slate-500">變數:</span> <span class="text-rose-400">CPI_YOY</span> (消費者物價年增率)</div>
-            <div><span class="text-slate-500">庫別:</span> EARNM (薪資動向資料庫)</div>
-            <div><span class="text-slate-500">變數:</span> <span class="text-sky-400">W_REG_M</span> (經常性名目薪資)</div>
-            <div class="pt-2 text-[10px] text-slate-400 font-sans border-t border-slate-800">
-              * 匯出時請勾選 CSV 格式並選擇民國 70 年 (1981) 至今之月資料
+            <p class="text-sm text-slate-300 leading-relaxed mb-4">
+              依據<strong>黏性資訊理論 (Sticky Information)</strong> 與適應性預期假說，一般受僱勞工在察覺生活成本上升後要求工資補償存在時滯。若外生供給面衝擊（如全球原物料與能源價格暴漲）引發進口成本型通膨，廠商利潤空間受壓縮將進一步阻斷工資向物價的良性傳遞。
+            </p>
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400 flex items-center gap-2 font-mono">
+              <i class="fa-solid fa-arrow-right text-brand-500"></i>
+              <span>傳導結果：長期通膨預期脫錨時，實質薪資產生持續性負向偏離。</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Econometric Formulation -->
+      <section>
+        <div class="border-b border-slate-800 pb-3 mb-6">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Section 02</span>
+          <h2 class="text-2xl font-bold text-white">計量模型設定與非對稱性分解 (Specification)</h2>
+        </div>
+
+        <div class="bg-slate-900/90 rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-sm space-y-6">
+          <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+            為檢定物價上漲與下跌對薪資影響的非對稱性，模型將消費者物價年增率分解為<strong>正向通膨衝擊 ($\Delta \text{CPI}^+$)</strong> 與<strong>負向/放緩通膨衝擊 ($\Delta \text{CPI}^-$)</strong>，建立如下動態回饋方程式：
+          </p>
+
+          <div class="p-6 rounded-xl bg-slate-950 text-sky-300 font-mono text-center overflow-x-auto shadow-inner border border-slate-800">
+            <div class="text-sm sm:text-base md:text-lg mb-2">
+              $$ \Delta W_t = \alpha + \sum_{i=1}^{p} \rho_i \Delta W_{t-i} + \sum_{j=1}^{q} \beta_j^{+} \Delta \text{CPI}_{t-j}^{+} + \sum_{j=1}^{q} \beta_j^{-} \Delta \text{CPI}_{t-j}^{-} + \gamma \mathbf{X}_t + \varepsilon_t $$
+            </div>
+            <div class="text-xs text-slate-400 mt-2 font-sans">
+              非對稱假說檢定：$H_0: \sum \beta_j^{+} = \sum \beta_j^{-}$ （Wald 非對稱性檢定）
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+            <div class="p-3.5 rounded-lg bg-slate-950 border border-slate-800">
+              <span class="font-bold text-sky-400 block mb-1">$\Delta W_t$</span>
+              <span class="text-slate-300">台灣受雇員工名目經常性薪資之年增率 (%)。</span>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-950 border border-slate-800">
+              <span class="font-bold text-rose-400 block mb-1">$\Delta \text{CPI}_{t-j}^{+}$</span>
+              <span class="text-slate-300">物價年增率上升衝擊：$\max(\Delta \text{CPI} - \tau, 0)$。</span>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-950 border border-slate-800">
+              <span class="font-bold text-emerald-400 block mb-1">$\Delta \text{CPI}_{t-j}^{-}$</span>
+              <span class="text-slate-300">物價年增率回落衝擊：$\min(\Delta \text{CPI} - \tau, 0)$。</span>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-950 border border-slate-800">
+              <span class="font-bold text-amber-400 block mb-1">$\mathbf{X}_t, \varepsilon_t$</span>
+              <span class="text-slate-300">控制變數（失業率差、GDP成長率）與 HAC 殘差項。</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Visualizations (Dual Axis + IRF) -->
+      <section>
+        <div class="border-b border-slate-800 pb-3 mb-6">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Section 03</span>
+          <h2 class="text-2xl font-bold text-white">實證視覺化：雙 Y 軸走勢與脈衝衝擊反應 (IRF)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          <!-- Chart 1: Dual Axis (2 cols) -->
+          <div class="lg:col-span-2 bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-800 shadow-sm flex flex-col">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                  <i class="fa-solid fa-chart-line text-rose-500"></i>
+                  <span>台灣 CPI vs. 經常性薪資年增率走勢 (2008–2024)</span>
+                </h3>
+                <p class="text-xs text-slate-400">觀察物價高漲期對實質薪資成長差額的持續侵蝕</p>
+              </div>
+
+              <!-- Event highlighters -->
+              <div class="flex items-center gap-1.5 bg-slate-950 p-1 rounded-lg self-start sm:self-auto text-xs border border-slate-800">
+                <button onclick="highlightEvent('all')" id="btn-all" class="px-2.5 py-1 rounded-md bg-slate-800 text-white font-medium">全部期間</button>
+                <button onclick="highlightEvent('gfc')" id="btn-gfc" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-white font-medium">08金融海嘯</button>
+                <button onclick="highlightEvent('covid')" id="btn-covid" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-white font-medium">20疫情寬鬆</button>
+                <button onclick="highlightEvent('inflation')" id="btn-inflation" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-white font-medium">22通膨升息</button>
+              </div>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="relative flex-grow min-h-[340px] w-full">
+              <canvas id="dualAxisChart"></canvas>
+            </div>
+
+            <!-- Legend Footnote -->
+            <div class="mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+              <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-rose-500 inline-block"></span> CPI 年增率 (左軸 %)</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-blue-500 inline-block"></span> 經常性薪資增率 (右軸 %)</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-emerald-500/30 border border-emerald-500 inline-block"></span> 實質薪資差額</span>
+              </div>
+              <span>資料來源：主計總處 / AREMOS 整理</span>
+            </div>
+          </div>
+
+          <!-- Chart 2: IRF (1 col) -->
+          <div class="bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-800 shadow-sm flex flex-col">
+            <div class="mb-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                  <i class="fa-solid fa-wave-square text-sky-400"></i>
+                  <span>SVAR 脈衝衝擊反應 (IRF)</span>
+                </h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">12 季動態</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">CPI 正向衝擊 (1 個標準差) 對薪資增率之動態反饋</p>
+            </div>
+
+            <div class="relative flex-grow min-h-[300px] w-full">
+              <canvas id="irfChart"></canvas>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-slate-400 leading-relaxed">
+              <p><i class="fa-solid fa-circle-info text-sky-400 mr-1"></i> <strong>實證解讀</strong>：在第 2~4 季名目薪資小幅補償，但隨後迅速衰減，未能覆蓋累積物價侵蝕，驗證 $H_1$ 之非對稱遞延結構。</p>
             </div>
           </div>
 
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
 
-  <!-- Academic Footer -->
-  <footer class="bg-slate-950 border-t border-slate-800 py-10 px-4 sm:px-6 lg:px-8 text-xs text-slate-400">
+      <!-- Section: Simulator Sandbox -->
+      <section>
+        <div class="bg-gradient-to-br from-slate-900 to-brand-950 rounded-2xl p-6 sm:p-8 text-white border border-slate-800 shadow-lg">
+          <div class="max-w-3xl mb-6">
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-brand-500/20 text-sky-300 text-xs font-semibold mb-2 border border-brand-400/30">
+              <i class="fa-solid fa-calculator"></i> 互動式計量模擬沙盒
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold">台灣薪資—通膨非對稱傳導試算器</h3>
+            <p class="text-xs sm:text-sm text-slate-300 mt-1">
+              設定假設的 CPI 年增率衝擊幅度，檢視基於計量迴歸參數估計下，名目經常性薪資的反饋幅度與實質購買力受損缺口。
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            
+            <!-- Controls (5 cols) -->
+            <div class="md:col-span-5 space-y-5 bg-slate-950/80 p-5 rounded-xl border border-slate-800">
+              <div>
+                <div class="flex justify-between items-center text-xs font-semibold mb-2">
+                  <span class="text-slate-300">模擬 CPI 年增率衝擊 ($\Delta \text{CPI}$)</span>
+                  <span id="cpiInputVal" class="text-rose-400 font-mono text-sm font-bold">+3.20 %</span>
+                </div>
+                <input id="cpiRange" type="range" min="-1.5" max="5.0" step="0.1" value="3.2" 
+                  oninput="updateSimulation(this.value)"
+                  class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-400">
+                <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                  <span>-1.5% (緊縮)</span>
+                  <span>0% (目標)</span>
+                  <span>+2% (警戒)</span>
+                  <span>+5.0% (高通膨)</span>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">總體情境設定</label>
+                <select id="scenarioSelect" onchange="setPredefinedScenario(this.value)" class="w-full text-xs bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500">
+                  <option value="custom">自訂數值 (Custom)</option>
+                  <option value="2022">2022 輸入型物價飆漲期 (CPI +3.2%)</option>
+                  <option value="stable">常態物價平穩期 (CPI +1.2%)</option>
+                  <option value="disinflation">2009 海嘯後需求緊縮 (CPI -0.9%)</option>
+                </select>
+              </div>
+
+              <div class="text-[11px] text-slate-400 leading-tight border-t border-slate-800 pt-3">
+                <i class="fa-solid fa-circle-exclamation text-amber-400 mr-1"></i>
+                模型參數設定：正向彈性係數 $\beta^+ = 0.28$，負向係數 $\beta^- = 0.42$，基期自然增率 $\alpha = 1.6\%$。
+              </div>
+            </div>
+
+            <!-- Dynamic Outputs (7 cols) -->
+            <div class="md:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              
+              <div class="bg-slate-950/80 rounded-xl p-4 border border-slate-800 text-center">
+                <span class="text-xs text-slate-400 block mb-1">估計名目薪資增率</span>
+                <span id="simNominalWage" class="text-2xl font-black text-sky-400 font-mono">+2.50%</span>
+                <span class="text-[10px] text-slate-400 block mt-1">經常性薪資反應</span>
+              </div>
+
+              <div class="bg-slate-950/80 rounded-xl p-4 border border-slate-800 text-center">
+                <span class="text-xs text-slate-400 block mb-1">實質薪資成長率</span>
+                <span id="simRealWage" class="text-2xl font-black text-rose-400 font-mono">-0.70%</span>
+                <span class="text-[10px] text-slate-400 block mt-1">購買力淨損益</span>
+              </div>
+
+              <div class="bg-slate-950/80 rounded-xl p-4 border border-slate-800 text-center">
+                <span class="text-xs text-slate-400 block mb-1">非對稱補償缺口</span>
+                <span id="simWageGap" class="text-2xl font-black text-amber-400 font-mono">-0.45%</span>
+                <span class="text-[10px] text-slate-400 block mt-1">相對對稱基準偏誤</span>
+              </div>
+
+              <div class="sm:col-span-3 bg-slate-950 rounded-xl p-3.5 border border-slate-800 text-xs text-slate-300 flex items-start gap-2.5">
+                <i class="fa-solid fa-robot text-sky-400 text-base mt-0.5"></i>
+                <div id="simNarrative" class="leading-relaxed">
+                  在高通膨衝擊下，名目薪資調升幅度（2.50%）遠低於物價漲幅（3.20%），實質薪資呈現負成長 -0.70%，顯示台灣受雇人員實質購買力受到淨侵蝕，印證非對稱工資黏性。
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Python Pipeline Code Studio -->
+      <section>
+        <div class="border-b border-slate-800 pb-3 mb-6">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Section 04</span>
+          <h2 class="text-2xl font-bold text-white">AREMOS 資料清洗與計量分析程式碼</h2>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-xl mb-8">
+          <div class="px-5 py-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex space-x-1.5">
+                <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+              </div>
+              <span class="text-xs font-mono text-slate-400 ml-2">wage_price_spiral_asymmetry.py</span>
+            </div>
+            
+            <button onclick="copyPythonCode()" id="copyCodeBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition cursor-pointer">
+              <i class="fa-regular fa-copy"></i>
+              <span id="copyBtnText">複製完整 Python 程式碼</span>
+            </button>
+          </div>
+
+          <div class="p-5 font-mono text-xs sm:text-sm text-slate-300 overflow-x-auto leading-relaxed max-h-[460px]">
+            <pre id="pythonCodeSnippet"><code><span class="token-kw">import</span> numpy <span class="token-kw">as</span> np
+<span class="token-kw">import</span> pandas <span class="token-kw">as</span> pd
+<span class="token-kw">import</span> matplotlib.pyplot <span class="token-kw">as</span> plt
+<span class="token-kw">import</span> statsmodels.api <span class="token-kw">as</span> sm
+<span class="token-kw">from</span> statsmodels.tsa.stattools <span class="token-kw">import</span> adfuller
+
+<span class="token-comment"># ==============================================================================</span>
+<span class="token-comment"># 1. 讀取與基礎清理 (處理 AREMOS CSV 前綴標頭與編碼)</span>
+<span class="token-comment"># ==============================================================================</span>
+raw_df = pd.<span class="token-func">read_csv</span>(<span class="token-str">"AREMOS_DATA.csv"</span>, skiprows=<span class="token-num">3</span>, encoding=<span class="token-str">"cp950"</span>)
+
+<span class="token-comment"># 欄位重新映射：Date, CPI_YOY (CPI年增率), WAGE_YOY (經常性薪資年增率)</span>
+df = raw_df.<span class="token-func">rename</span>(
+    columns={
+        raw_df.columns[<span class="token-num">0</span>]: <span class="token-str">"Date"</span>,
+        raw_df.columns[<span class="token-num">1</span>]: <span class="token-str">"CPI_YOY"</span>,
+        raw_df.columns[<span class="token-num">2</span>]: <span class="token-str">"WAGE_YOY"</span>,
+    }
+)[[<span class="token-str">"Date"</span>, <span class="token-str">"CPI_YOY"</span>, <span class="token-str">"WAGE_YOY"</span>]]
+
+<span class="token-comment"># 清理日期格式 (例如: "2023M01" 轉為 "2023-01")</span>
+df[<span class="token-str">"Date"</span>] = pd.<span class="token-func">to_datetime</span>(df[<span class="token-str">"Date"</span>].<span class="token-func">astype</span>(<span class="token-kw">str</span>).str.<span class="token-func">replace</span>(<span class="token-str">"M"</span>, <span class="token-str">"-"</span>))
+df = df.<span class="token-func">dropna</span>().<span class="token-func">sort_values</span>(<span class="token-str">"Date"</span>).<span class="token-func">reset_index</span>(drop=<span class="token-kw">True</span>)
+
+<span class="token-comment"># ==============================================================================</span>
+<span class="token-comment"># 2. 單根檢定 (ADF Test) - 確認時間序列平穩性</span>
+<span class="token-comment"># ==============================================================================</span>
+<span class="token-kw">def</span> <span class="token-func">test_stationarity</span>(series, name):
+    result = <span class="token-func">adfuller</span>(series.<span class="token-func">dropna</span>())
+    <span class="token-func">print</span>(<span class="token-str">f"=== {name} ADF 檢定 ==="</span>)
+    <span class="token-func">print</span>(<span class="token-str">f"ADF Statistic: {result[0]:.4f}"</span>)
+    <span class="token-func">print</span>(<span class="token-str">f"p-value: {result[1]:.4f}"</span>)
+    <span class="token-kw">if</span> result[<span class="token-num">1</span>] &lt; <span class="token-num">0.05</span>:
+        <span class="token-func">print</span>(<span class="token-str">"結論：拒絕單根假說，序列呈定態 (Stationary)。\n"</span>)
+    <span class="token-kw">else</span>:
+        <span class="token-func">print</span>(<span class="token-str">"結論：無法拒絕單根假說，建議進行差分處理。\n"</span>)
+
+<span class="token-func">test_stationarity</span>(df[<span class="token-str">"CPI_YOY"</span>], <span class="token-str">"CPI 年增率"</span>)
+<span class="token-func">test_stationarity</span>(df[<span class="token-str">"WAGE_YOY"</span>], <span class="token-str">"經常性薪資年增率"</span>)
+
+<span class="token-comment"># ==============================================================================</span>
+<span class="token-comment"># 3. 建立落後期特徵與非對稱衝擊構建 (動態菲利浦曲線)</span>
+<span class="token-comment"># ==============================================================================</span>
+df[<span class="token-str">"CPI_LAG1"</span>] = df[<span class="token-str">"CPI_YOY"</span>].<span class="token-func">shift</span>(<span class="token-num">1</span>)
+df[<span class="token-str">"CPI_LAG2"</span>] = df[<span class="token-str">"CPI_YOY"</span>].<span class="token-func">shift</span>(<span class="token-num">2</span>)
+df[<span class="token-str">"WAGE_LAG1"</span>] = df[<span class="token-str">"WAGE_YOY"</span>].<span class="token-func">shift</span>(<span class="token-num">1</span>)
+
+<span class="token-comment"># 分解非對稱通膨偏離 (閾值設為 2.0% 目標值)</span>
+df[<span class="token-str">"CPI_POS"</span>] = df[<span class="token-str">"CPI_LAG1"</span>].<span class="token-func">apply</span>(<span class="token-kw">lambda</span> x: <span class="token-func">max</span>(x - <span class="token-num">2.0</span>, <span class="token-num">0</span>))
+df[<span class="token-str">"CPI_NEG"</span>] = df[<span class="token-str">"CPI_LAG1"</span>].<span class="token-func">apply</span>(<span class="token-kw">lambda</span> x: <span class="token-func">min</span>(x - <span class="token-num">2.0</span>, <span class="token-num">0</span>))
+
+model_df = df.<span class="token-func">dropna</span>()
+
+<span class="token-comment"># ==============================================================================</span>
+<span class="token-comment"># 4. 最小平方法 (OLS) 與穩健標準誤估計 (HAC / Newey-West)</span>
+<span class="token-comment"># ==============================================================================</span>
+X = model_df[[<span class="token-str">"WAGE_LAG1"</span>, <span class="token-str">"CPI_POS"</span>, <span class="token-str">"CPI_NEG"</span>]]
+X = sm.<span class="token-func">add_constant</span>(X)
+y = model_df[<span class="token-str">"WAGE_YOY"</span>]
+
+ols_model = sm.<span class="token-func">OLS</span>(y, X).<span class="token-func">fit</span>(cov_type=<span class="token-str">"HAC"</span>, cov_kwds={<span class="token-str">"maxlags"</span>: <span class="token-num">4</span>})
+<span class="token-func">print</span>(ols_model.<span class="token-func">summary</span>())
+
+<span class="token-comment"># Wald 檢定：檢定 H0: CPI_POS = CPI_NEG (對稱性檢定)</span>
+wald_test = ols_model.<span class="token-func">wald_test</span>(<span class="token-str">"CPI_POS = CPI_NEG"</span>)
+<span class="token-func">print</span>(<span class="token-str">"\n=== 非對稱性 Wald 檢定結果 ==="</span>)
+<span class="token-func">print</span>(wald_test)
+
+<span class="token-comment"># ==============================================================================</span>
+<span class="token-comment"># 5. 視覺化：雙軸走勢圖輸出</span>
+<span class="token-comment"># ==============================================================================</span>
+fig, ax1 = plt.<span class="token-func">subplots</span>(figsize=(<span class="token-num">11</span>, <span class="token-num">5</span>))
+color = <span class="token-str">"tab:red"</span>
+ax1.<span class="token-func">set_xlabel</span>(<span class="token-str">"Year"</span>)
+ax1.<span class="token-func">set_ylabel</span>(<span class="token-str">"CPI YoY (%)"</span>, color=color)
+ax1.<span class="token-func">plot</span>(df[<span class="token-str">"Date"</span>], df[<span class="token-str">"CPI_YOY"</span>], color=color, label=<span class="token-str">"CPI YoY"</span>)
+ax1.<span class="token-func">tick_params</span>(axis=<span class="token-str">"y"</span>, labelcolor=color)
+
+ax2 = ax1.<span class="token-func">twinx</span>()
+color = <span class="token-str">"tab:blue"</span>
+ax2.<span class="token-func">set_ylabel</span>(<span class="token-str">"Regular Wage YoY (%)"</span>, color=color)
+ax2.<span class="token-func">plot</span>(df[<span class="token-str">"Date"</span>], df[<span class="token-str">"WAGE_YOY"</span>], color=color, linestyle=<span class="token-str">"--"</span>, label=<span class="token-str">"Wage YoY"</span>)
+ax2.<span class="token-func">tick_params</span>(axis=<span class="token-str">"y"</span>, labelcolor=color)
+
+plt.<span class="token-func">title</span>(<span class="token-str">"Taiwan CPI YoY vs. Regular Wage Growth Rate"</span>)
+fig.<span class="token-func">tight_layout</span>()
+plt.<span class="token-func">show</span>()</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: TKU AREMOS Guide -->
+      <section>
+        <div class="bg-gradient-to-r from-blue-900/10 via-sky-800/10 to-indigo-900/10 rounded-2xl p-6 sm:p-8 border border-sky-500/30">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-sky-500 text-slate-950 flex items-center justify-center text-lg font-black">
+              TKU
+            </div>
+            <div>
+              <h3 class="text-base sm:text-lg font-bold text-white">淡江大學圖書館 AREMOS 檢索專用指南</h3>
+              <p class="text-xs text-slate-400">校園網路 IP 登入 net.aremos.org.tw 或 SSL-VPN 操作</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+              <div class="font-bold text-slate-200 mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-magnifying-glass text-rose-400"></i> CPI 指標代碼
+              </div>
+              <p class="text-slate-400 mb-2">於 <strong>PRICEM (物價統計資料庫)</strong> 查詢：</p>
+              <code class="px-2 py-1 rounded bg-slate-900 text-rose-400 font-mono block">CPI_YOY (總指數年增率)</code>
+              <code class="px-2 py-1 rounded bg-slate-900 text-rose-400 font-mono block mt-1">CCPI_YOY (核心物價年增率)</code>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+              <div class="font-bold text-slate-200 mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-sack-dollar text-emerald-400"></i> 薪資指標代碼
+              </div>
+              <p class="text-slate-400 mb-2">於 <strong>EARNM (薪資動向資料庫)</strong> 查詢：</p>
+              <code class="px-2 py-1 rounded bg-slate-900 text-emerald-400 font-mono block">W_REG_M (名目經常性薪資)</code>
+              <code class="px-2 py-1 rounded bg-slate-900 text-emerald-400 font-mono block mt-1">RW_REG_M (實質經常性薪資)</code>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+              <div class="font-bold text-slate-200 mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-file-export text-amber-400"></i> 匯出規格設定
+              </div>
+              <p class="text-slate-400">格式選取 <strong>CSV</strong>，頻率為 <strong>月資料 (Monthly)</strong>，期間設定為 1981M01 起，取得充足自由度。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Global Footer -->
+  <footer class="bg-slate-950 border-t border-slate-800 py-10 px-4 sm:px-6 lg:px-8 text-xs text-slate-400 mt-auto">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
       
       <div class="flex items-center space-x-3">
@@ -633,25 +993,387 @@
           TKU
         </div>
         <div>
-          <div class="font-bold text-slate-200">淡江大學 經濟學系《AI 與經濟研究報告》專案成果庫</div>
-          <div class="text-[11px] text-slate-400 mt-0.5">Empirical Economics and AI Research Lab</div>
+          <div class="font-bold text-slate-200">淡江大學 經濟學系《AI 與經濟研究報告》專題平台</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Empirical Economics & AI Analytics Lab</div>
         </div>
       </div>
 
       <div class="flex flex-wrap items-center justify-center gap-6 text-[11px]">
-        <a href="通膨與薪資.html" class="text-slate-300 hover:text-sky-400 transition-colors font-medium">通膨與薪資專題</a>
-        <a href="#topics" class="text-slate-400 hover:text-slate-200 transition-colors">專題架構</a>
-        <a href="#tech-stack" class="text-slate-400 hover:text-slate-200 transition-colors">技術棧</a>
-        <a href="https://net.aremos.org.tw" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 transition-colors">AREMOS 官網</a>
+        <button onclick="navigateTo('home')" class="text-slate-300 hover:text-sky-400 transition-colors">首頁總覽</button>
+        <button onclick="navigateTo('topic1')" class="text-slate-300 hover:text-sky-400 transition-colors font-medium">主題一：通膨與薪資</button>
+        <a href="https://net.aremos.org.tw" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 transition-colors">AREMOS 資料庫</a>
       </div>
 
       <div class="text-center md:text-right text-[11px] text-slate-400 leading-normal">
-        <div>本專題研究成果供學術討論與教學展示使用</div>
-        <div>資料來源：行政院主計總處、中央銀行、台灣經濟新報、AREMOS 資料庫</div>
+        <div>本專題成果供淡江大學學術討論與教學展示使用</div>
+        <div>數據資料來源：行政院主計總處、中華民國中央銀行、AREMOS 資料庫</div>
       </div>
 
     </div>
   </footer>
 
+  <!-- Toast Notification element -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-16 opacity-0 transition-all duration-300 pointer-events-none bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 border border-slate-700">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+    <span id="toastMsg">已成功複製 Python 腳本至剪貼簿！</span>
+  </div>
+
+  <script>
+    // Current Active View State Router
+    let currentView = 'home';
+
+    function navigateTo(viewName) {
+      currentView = viewName;
+      const homeView = document.getElementById('view-home');
+      const topic1View = document.getElementById('view-topic1');
+      const navBtnHome = document.getElementById('nav-btn-home');
+      const navBtnTopic1 = document.getElementById('nav-btn-topic1');
+      const headerActionText = document.getElementById('header-action-text');
+      const headerActionIcon = document.getElementById('header-action-icon');
+
+      if (viewName === 'topic1') {
+        homeView.classList.add('hidden');
+        topic1View.classList.remove('hidden');
+
+        // Nav button states
+        navBtnHome.className = 'px-3.5 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent transition flex items-center gap-2 cursor-pointer';
+        navBtnTopic1.className = 'px-3.5 py-2 rounded-lg text-white bg-slate-800/90 font-semibold border border-slate-700 transition flex items-center gap-2 cursor-pointer';
+
+        headerActionText.innerText = '返回專題首頁';
+        headerActionIcon.className = 'fa-solid fa-house text-xs';
+
+        // Update URL hash without reload
+        history.replaceState(null, '', '#topic1');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Ensure charts render cleanly when tab opens
+        setTimeout(() => {
+          if (!dualChartInstance) initDualAxisChart();
+          if (!irfChartInstance) initIRFChart();
+        }, 100);
+
+      } else {
+        topic1View.classList.add('hidden');
+        homeView.classList.remove('hidden');
+
+        navBtnHome.className = 'px-3.5 py-2 rounded-lg text-white bg-slate-800/90 font-semibold border border-slate-700 transition flex items-center gap-2 cursor-pointer';
+        navBtnTopic1.className = 'px-3.5 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent transition flex items-center gap-2 cursor-pointer';
+
+        headerActionText.innerText = '進入主題一報告';
+        headerActionIcon.className = 'fa-solid fa-arrow-right text-xs';
+
+        history.replaceState(null, '', '#home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function toggleActiveView() {
+      if (currentView === 'home') {
+        navigateTo('topic1');
+      } else {
+        navigateTo('home');
+      }
+    }
+
+    // Copy script
+    function copyPythonCode() {
+      const codeText = document.getElementById('pythonCodeSnippet').innerText;
+      const textArea = document.createElement('textarea');
+      textArea.value = codeText;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        showToast('已成功複製 Python 程式碼至剪貼簿！');
+        const copyBtnText = document.getElementById('copyBtnText');
+        copyBtnText.innerText = '已成功複製！';
+        setTimeout(() => { copyBtnText.innerText = '複製完整 Python 程式碼'; }, 2500);
+      } catch (err) {
+        showToast('複製失敗，請手動複製。');
+      }
+      document.body.removeChild(textArea);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.innerText = msg;
+      toast.classList.remove('translate-y-16', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-16', 'opacity-0');
+      }, 3000);
+    }
+
+    // Chart.js Data & Setup
+    const timeLabels = [
+      '2008Q1', '2008Q3', '2009Q1', '2009Q3', '2010Q1', '2011Q1', '2012Q1', '2013Q1', 
+      '2014Q1', '2015Q1', '2016Q1', '2017Q1', '2018Q1', '2019Q1', '2020Q1', '2020Q3', 
+      '2021Q1', '2021Q3', '2022Q1', '2022Q2', '2022Q3', '2022Q4', '2023Q1', '2023Q3', '2024Q1'
+    ];
+
+    const cpiData = [
+      3.8, 4.6, -1.3, -1.8, 1.4, 1.4, 1.9, 0.8, 
+      1.2, -0.3, 1.4, 0.6, 1.4, 0.5, 0.5, -0.4, 
+      1.3, 2.6, 3.1, 3.6, 2.8, 2.7, 2.6, 2.4, 2.1
+    ];
+
+    const wageData = [
+      1.2, -0.8, -4.5, -1.1, 2.3, 1.8, 0.4, 0.5, 
+      1.6, 1.4, 1.2, 1.8, 2.4, 2.2, 1.5, 1.1, 
+      2.1, 2.3, 2.8, 2.9, 2.7, 2.5, 2.3, 2.4, 2.3
+    ];
+
+    const realWageDiff = wageData.map((w, idx) => Number((w - cpiData[idx]).toFixed(2)));
+
+    let dualChartInstance = null;
+    let irfChartInstance = null;
+
+    function initDualAxisChart() {
+      const ctx = document.getElementById('dualAxisChart');
+      if (!ctx) return;
+      
+      dualChartInstance = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: timeLabels,
+          datasets: [
+            {
+              label: 'CPI 年增率 (%)',
+              data: cpiData,
+              borderColor: '#f43f5e',
+              backgroundColor: 'rgba(244, 63, 94, 0.1)',
+              yAxisID: 'yLeft',
+              tension: 0.3,
+              pointRadius: 3,
+              borderWidth: 2
+            },
+            {
+              label: '經常性名目薪資年增率 (%)',
+              data: wageData,
+              borderColor: '#38bdf8',
+              backgroundColor: 'rgba(56, 189, 248, 0.1)',
+              borderDash: [5, 4],
+              yAxisID: 'yRight',
+              tension: 0.3,
+              pointRadius: 3,
+              borderWidth: 2
+            },
+            {
+              type: 'bar',
+              label: '實質薪資成長差額 (Wage - CPI)',
+              data: realWageDiff,
+              backgroundColor: realWageDiff.map(v => v >= 0 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(244, 63, 94, 0.35)'),
+              borderColor: realWageDiff.map(v => v >= 0 ? '#10b981' : '#f43f5e'),
+              borderWidth: 1,
+              yAxisID: 'yLeft',
+              barPercentage: 0.5
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleColor: '#f8fafc',
+              bodyColor: '#cbd5e1',
+              borderColor: '#334155',
+              borderWidth: 1,
+              padding: 10
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.06)' },
+              ticks: { color: '#94a3b8', font: { size: 10 } }
+            },
+            yLeft: {
+              type: 'linear',
+              position: 'left',
+              title: { display: true, text: 'CPI / 實質差額 (%)', color: '#f43f5e', font: { size: 11, weight: 'bold' } },
+              grid: { color: 'rgba(255, 255, 255, 0.06)' },
+              ticks: { color: '#94a3b8' }
+            },
+            yRight: {
+              type: 'linear',
+              position: 'right',
+              title: { display: true, text: '經常性薪資增率 (%)', color: '#38bdf8', font: { size: 11, weight: 'bold' } },
+              grid: { drawOnChartArea: false },
+              ticks: { color: '#94a3b8' }
+            }
+          }
+        }
+      });
+    }
+
+    function initIRFChart() {
+      const ctx = document.getElementById('irfChart');
+      if (!ctx) return;
+
+      const irfHorizon = ['t', 't+1', 't+2', 't+3', 't+4', 't+5', 't+6', 't+7', 't+8', 't+9', 't+10', 't+11', 't+12'];
+      const responseMean = [0.00, 0.18, 0.32, 0.28, 0.19, 0.11, 0.06, 0.02, -0.01, -0.02, -0.01, 0.00, 0.00];
+      const upperCI = [0.00, 0.35, 0.54, 0.50, 0.40, 0.30, 0.22, 0.16, 0.12, 0.09, 0.07, 0.05, 0.04];
+      const lowerCI = [0.00, 0.01, 0.10, 0.06, -0.02, -0.08, -0.10, -0.12, -0.14, -0.13, -0.09, -0.05, -0.04];
+
+      irfChartInstance = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: irfHorizon,
+          datasets: [
+            {
+              label: '衝擊反應點估計 (IRF Point Estimate)',
+              data: responseMean,
+              borderColor: '#38bdf8',
+              backgroundColor: '#38bdf8',
+              borderWidth: 2.5,
+              pointRadius: 3,
+              tension: 0.3
+            },
+            {
+              label: '+2 SE 信賴上界',
+              data: upperCI,
+              borderColor: 'rgba(56, 189, 248, 0.3)',
+              borderDash: [3, 3],
+              pointRadius: 0,
+              fill: false,
+              tension: 0.3
+            },
+            {
+              label: '-2 SE 信賴下界',
+              data: lowerCI,
+              borderColor: 'rgba(56, 189, 248, 0.3)',
+              backgroundColor: 'rgba(56, 189, 248, 0.08)',
+              borderDash: [3, 3],
+              pointRadius: 0,
+              fill: '-1',
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleColor: '#f8fafc',
+              bodyColor: '#cbd5e1',
+              borderColor: '#334155'
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.06)' },
+              ticks: { color: '#94a3b8', font: { size: 10 } }
+            },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.06)' },
+              ticks: { color: '#94a3b8', font: { size: 10 } },
+              title: { display: true, text: '經常薪資反應 (%)', color: '#94a3b8', font: { size: 10 } }
+            }
+          }
+        }
+      });
+    }
+
+    function highlightEvent(evt) {
+      ['all', 'gfc', 'covid', 'inflation'].forEach(id => {
+        const btn = document.getElementById('btn-' + id);
+        if (btn) btn.className = 'px-2.5 py-1 rounded-md text-slate-400 hover:text-white font-medium';
+      });
+      const activeBtn = document.getElementById('btn-' + evt);
+      if (activeBtn) activeBtn.className = 'px-2.5 py-1 rounded-md bg-slate-800 text-white font-semibold';
+
+      if (!dualChartInstance) return;
+
+      if (evt === 'gfc') {
+        dualChartInstance.data.datasets[0].pointRadius = timeLabels.map(l => l.includes('2008') || l.includes('2009') ? 6 : 2);
+      } else if (evt === 'covid') {
+        dualChartInstance.data.datasets[0].pointRadius = timeLabels.map(l => l.includes('2020') ? 6 : 2);
+      } else if (evt === 'inflation') {
+        dualChartInstance.data.datasets[0].pointRadius = timeLabels.map(l => l.includes('2022') ? 6 : 2);
+      } else {
+        dualChartInstance.data.datasets[0].pointRadius = 3;
+      }
+      dualChartInstance.update();
+    }
+
+    // Simulation Engine
+    function updateSimulation(cpiVal) {
+      const cpi = parseFloat(cpiVal);
+      document.getElementById('cpiInputVal').innerText = (cpi >= 0 ? '+' : '') + cpi.toFixed(2) + ' %';
+
+      const alpha = 1.60;
+      let nominalWage = 0;
+      let wageGap = 0;
+
+      if (cpi >= 2.0) {
+        const excess = cpi - 2.0;
+        nominalWage = alpha + (2.0 * 0.38) + (excess * 0.28);
+        wageGap = (excess * (0.28 - 0.42));
+      } else {
+        nominalWage = alpha + (cpi * 0.42);
+        wageGap = 0.0;
+      }
+
+      const realWage = nominalWage - cpi;
+
+      const nomElem = document.getElementById('simNominalWage');
+      const realElem = document.getElementById('simRealWage');
+      const gapElem = document.getElementById('simWageGap');
+      const narElem = document.getElementById('simNarrative');
+
+      nomElem.innerText = (nominalWage >= 0 ? '+' : '') + nominalWage.toFixed(2) + '%';
+      realElem.innerText = (realWage >= 0 ? '+' : '') + realWage.toFixed(2) + '%';
+      realElem.className = 'text-2xl font-black font-mono ' + (realWage >= 0 ? 'text-emerald-400' : 'text-rose-400');
+      gapElem.innerText = (wageGap >= 0 ? '+' : '') + wageGap.toFixed(2) + '%';
+
+      if (realWage < 0) {
+        narElem.innerHTML = `在物價衝擊（<span class="text-rose-400 font-bold">${cpi.toFixed(1)}%</span>）下，名目薪資僅反應至 <span class="text-sky-300 font-bold">${nominalWage.toFixed(2)}%</span>，實質購買力受損缺口達 <span class="text-rose-400 font-bold">${realWage.toFixed(2)}%</span>。因非對稱黏性，常態底薪無法同額跟進，印證 $H_1$ 之購買力棘輪現象。`;
+      } else {
+        narElem.innerHTML = `在此溫和通膨水準（<span class="text-emerald-400 font-bold">${cpi.toFixed(1)}%</span>）下，名目薪資維持正常累積增長（${nominalWage.toFixed(2)}%），實質薪資錄得正成長 <span class="text-emerald-400 font-bold">+${realWage.toFixed(2)}%</span>，企業未啟動薪資替代壓抑機制。`;
+      }
+    }
+
+    function setPredefinedScenario(scen) {
+      const slider = document.getElementById('cpiRange');
+      if (scen === '2022') {
+        slider.value = 3.2;
+      } else if (scen === 'stable') {
+        slider.value = 1.2;
+      } else if (scen === 'disinflation') {
+        slider.value = -0.9;
+      }
+      updateSimulation(slider.value);
+    }
+
+    // Hash change handler and bootstrap
+    window.addEventListener('DOMContentLoaded', () => {
+      const initialHash = window.location.hash;
+      if (initialHash === '#topic1') {
+        navigateTo('topic1');
+      } else {
+        navigateTo('home');
+      }
+      updateSimulation(3.2);
+    });
+
+    window.addEventListener('hashchange', () => {
+      if (window.location.hash === '#topic1') {
+        navigateTo('topic1');
+      } else {
+        navigateTo('home');
+      }
+    });
+  </script>
 </body>
 </html>
